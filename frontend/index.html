@@ -17,6 +17,34 @@
     <meta property="og:title" content="Maheswari Pinneti — Frontend Developer" />
     <meta property="og:description" content="Building scalable interfaces, production applications and immersive web experiences." />
     
+    <!-- Datadog RUM Monitoring Initialization -->
+    <script>
+      (function(h,o,u,n,d) {
+        h.ddjsapi = h.ddjsapi || [];
+        var s = o.createElement('script'); s.async = true; s.src = 'https://www.datadoghq-browser-agent.com/us1/v5/datadog-rum.js';
+        var first = o.getElementsByTagName('script')[0]; first.parentNode.insertBefore(s, first);
+      })(window, document);
+      window.ddjsapi = window.ddjsapi || [];
+      window.ddjsapi.push(function() {
+        if (window.DD_RUM) {
+          window.DD_RUM.init({
+            applicationId: 'DATADOG_RUM_APP_ID_PLACEHOLDER',
+            clientToken: 'DATADOG_CLIENT_TOKEN_PLACEHOLDER',
+            site: 'datadoghq.com',
+            service: 'maheswari-developer-universe',
+            env: 'production',
+            version: '1.0.0',
+            sessionSampleRate: 100,
+            sessionReplaySampleRate: 20,
+            trackUserInteractions: true,
+            trackResources: true,
+            trackLongTasks: true,
+            defaultPrivacyLevel: 'allow'
+          });
+        }
+      });
+    </script>
+    
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

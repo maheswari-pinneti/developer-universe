@@ -1,0 +1,25 @@
+meta {
+  name: Submit Project Inquiry
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/api/inquiries
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Engineering Manager",
+    "email": "manager@enterprise.com",
+    "projectType": "Full-Stack Dashboard",
+    "message": "We need a production React + Three.js workforce dashboard built with REST API connectivity."
+  }
+}
+
+assert {
+  res.status: eq 201
+  res.body.success: eq true
+}

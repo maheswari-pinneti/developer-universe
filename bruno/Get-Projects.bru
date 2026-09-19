@@ -1,0 +1,16 @@
+meta {
+  name: Get Projects List
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/api/projects
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.success: eq true
+}

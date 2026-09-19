@@ -1,0 +1,8 @@
+{
+  "version": "1",
+  "name": "Maheswari Developer Universe API",
+  "type": "collection",
+  "environment": {
+    "baseUrl": "http://localhost:5000"
+  }
+}

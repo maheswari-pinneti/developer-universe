@@ -1,0 +1,25 @@
+meta {
+  name: Submit Contact Message
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/contact
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Recruiter Lead",
+    "email": "lead@techcompany.com",
+    "company": "Tech Corp",
+    "message": "We reviewed your Developer Universe portfolio and would love to discuss a Senior Frontend Engineer role."
+  }
+}
+
+assert {
+  res.status: eq 201
+  res.body.success: eq true
+}

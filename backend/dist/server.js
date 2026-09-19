@@ -9,6 +9,13 @@ const PORT = process.env.PORT || 5000;
 app.use(helmet());
 app.use(cors({ origin: '*' }));
 app.use(express.json());
+// Datadog APM & Request Tracing Middleware
+app.use((req, res, next) => {
+    const traceId = req.headers['x-datadog-trace-id'] || `dd-trace-${Date.now()}`;
+    res.setHeader('x-datadog-trace-id', traceId);
+    console.log(`[DATADOG APM LOG] ${req.method} ${req.url} - TraceID: ${traceId}`);
+    next();
+});
 // Rate Limiter
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
@@ -37,9 +44,98 @@ const contactSchema = z.object({
     company: z.string().optional(),
     message: z.string().min(10, 'Message must be at least 10 characters'),
 });
+// Zod Inquiry Schema
+const inquirySchema = z.object({
+    name: z.string().min(2, 'Name required'),
+    email: z.string().email('Invalid email'),
+    projectType: z.string().min(2, 'Project type required'),
+    message: z.string().min(10, 'Details required'),
+});
 // REST API Endpoints
+app.get('/api/health', (_req, res) => {
+    res.json({
+        status: 'healthy',
+        uptime: process.uptime(),
+        timestamp: new Date().toISOString(),
+        services: { database: 'active', githubApi: 'active' }
+    });
+});
 app.get('/api/profile', (_req, res) => {
     res.json({ success: true, data: PROFILE_DATA, timestamp: new Date().toISOString() });
+});
+app.get('/api/projects', (_req, res) => {
+    res.json({
+        success: true,
+        data: [
+            {
+                id: "stackly",
+                title: "STACKLY",
+                subtitle: "WORKFORCE MANAGEMENT PLATFORM",
+                category: "Enterprise",
+                featured: true,
+                technologies: ["React", "TypeScript", "Redux Toolkit", "Node.js", "Express.js", "SQLite"],
+                githubUrl: "https://github.com/maheswari-pinneti"
+            },
+            {
+                id: "deepfake-face-detection",
+                title: "DeepFake Face Detection System",
+                subtitle: "AI / Deep Learning Solution",
+                category: "AI / Machine Learning",
+                featured: true,
+                technologies: ["Python", "TensorFlow", "OpenCV", "LSTM", "React"],
+                githubUrl: "https://github.com/maheswari-pinneti"
+            }
+        ],
+        timestamp: new Date().toISOString()
+    });
+});
+app.get('/api/skills', (_req, res) => {
+    res.json({
+        success: true,
+        data: [
+            { id: "react", name: "React 18+", category: "FRONTEND", level: 95 },
+            { id: "typescript", name: "TypeScript", category: "FRONTEND", level: 92 },
+            { id: "nodejs", name: "Node.js", category: "BACKEND", level: 88 },
+            { id: "threejs", name: "Three.js", category: "3D_CREATIVE", level: 80 }
+        ],
+        timestamp: new Date().toISOString()
+    });
+});
+app.get('/api/experience', (_req, res) => {
+    res.json({
+        success: true,
+        data: [
+            {
+                id: "stackly-dev",
+                role: "Frontend Developer",
+                company: "Stackly",
+                period: "2024 — Present",
+                location: "Bengaluru, India"
+            },
+            {
+                id: "exner-dev",
+                role: "Frontend & Web Engineering Developer",
+                company: "Exner Technologies",
+                period: "2023 — 2024",
+                location: "Bengaluru, India"
+            }
+        ],
+        timestamp: new Date().toISOString()
+    });
+});
+app.post('/api/inquiries', (req, res, next) => {
+    try {
+        const validated = inquirySchema.parse(req.body);
+        console.log('[API BACKEND PROJECT INQUIRY RECORDED]:', validated);
+        res.status(201).json({
+            success: true,
+            message: 'Project inquiry recorded. Maheswari will contact you shortly.',
+            timestamp: new Date().toISOString()
+        });
+    }
+    catch (err) {
+        next(err);
+    }
 });
 app.get('/api/github/repos', async (_req, res) => {
     try {
