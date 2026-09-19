@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://maheswari-pinneti.github.io/sitemap.xml
