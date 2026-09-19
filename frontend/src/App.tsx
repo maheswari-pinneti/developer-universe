@@ -22,13 +22,16 @@ import { CommandCenter } from './components/layout/CommandCenter';
 import { ResumeModal } from './components/layout/ResumeModal';
 import { useAppStore } from './store/useAppStore';
 
+import { ErrorBoundary } from './components/layout/ErrorBoundary';
+
 const queryClient = new QueryClient();
 
 export function App() {
   const { initialized, setInitialized } = useAppStore();
 
   return (
-    <QueryClientProvider client={queryClient}>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
       <div className="min-h-screen bg-black text-white font-sans selection:bg-emerald-500 selection:text-black antialiased overflow-x-hidden">
         <CustomCursor />
         {!initialized && <BootLoader onComplete={() => setInitialized(true)} />}
@@ -55,6 +58,7 @@ export function App() {
         <ResumeModal />
       </div>
     </QueryClientProvider>
+  </ErrorBoundary>
   );
 }
 
